@@ -27,7 +27,7 @@ CBullet::CBullet(bool bIsBomb)
 		SetW(1);
 		SetH(1);
 		speed = 8;
-		dist = Distance(mouse_x, mouse_y, GetX() + GetW() / 2, GetY() + GetH() / 2) / 3;
+		dist = Distance(mouse_x, mouse_y, GetX() + GetW() / 2, GetY() + GetH() / 2) / 5;
 	}
 
 	SetX(MainChar->GetX() + MainChar->GetW() / 2 - GetW() / 2);

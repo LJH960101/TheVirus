@@ -9,6 +9,7 @@ CMainChar::CMainChar() : CGameObject(10, 10, 5, 5, "бс")
 	speed = 3;
 	moveTimer = 0;
 	ammo = 5;
+	var["attackTimer"] = 0;
 }
 CMainChar::~CMainChar()
 {
@@ -17,8 +18,14 @@ void CMainChar::Draw()
 {
 	EColor oldColor = Screen->GetColor();
 	EColor oldBkColor = Screen->GetBkColor();
-	
-	Screen->SetColor(m_color, m_bkColor);
+
+	if (var["attackTimer"] > 0) {
+		--var["attackTimer"];
+		Screen->SetColor(EColor::CC_CYAN, EColor::CC_WHITE);
+	}
+	else {
+		Screen->SetColor(m_color, m_bkColor);
+	}
 	for (int i = 0; i < GetW(); i++) {
 		for (int j=0; j < GetH(); j++){
 			Screen->Print(GetX()+i, GetY()+j, m_img, 2);
@@ -89,6 +96,7 @@ void CMainChar::IsAttack(CGameObject * obj)
 		SetPosition(SCREEN_WIDTH / 2 - MainChar->GetW() / 2, SCREEN_HEIGHT / 2 - MainChar->GetH() / 2);
 
 		obj->Destory();
+		var["attackTimer"] = 5;
 	}
 }
 void CMainChar::Shoot_L()

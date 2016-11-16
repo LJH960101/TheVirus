@@ -148,9 +148,6 @@ int main(VOID)
 			if (deltaTime * 1000 < 20) Sleep(20.0f - deltaTime * 1000);
 			timer = clock();
 		}
-		//타이머
-
-		
 	}
 	return 0;
 }
@@ -179,13 +176,9 @@ void Init() {
 	// 메인 캐릭터의 위치를 리셋 합니다.
 	MainChar->SetPosition(SCREEN_WIDTH/2 - MainChar->GetW()/2, SCREEN_HEIGHT/2 - MainChar->GetH()/2);
 
-	//
-	CGameObject* obj = new CGameObject(MainChar->GetX()-6, MainChar->GetY()-6, "★");
-	Gameobjects.push_back(obj);
-
 	// 커서를 지웁니다.
 	CONSOLE_CURSOR_INFO ConsoleCursor;
-	ConsoleCursor.bVisible = true; // true 보임, false 안보임
+	ConsoleCursor.bVisible = false;
 	ConsoleCursor.dwSize = 1; // 커서사이즈
 	SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &ConsoleCursor); // 설정
 }

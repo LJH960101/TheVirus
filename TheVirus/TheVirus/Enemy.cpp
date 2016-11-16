@@ -11,6 +11,8 @@ CEnemy::CEnemy()
 	SetImg("■");
 	m_color = EColor::CC_RED;
 
+	var["attackTimer"] = 0;
+
 	// Enemy 위치 고르기
 	if (rand() % 4 == 1) { // 상
 		SetX((rand() % SCREEN_WIDTH + 2) - 1);
@@ -41,6 +43,13 @@ void CEnemy::Draw()
 	EColor oldBkColor = Screen->GetBkColor();
 
 	Screen->SetColor(m_color, m_bkColor);
+	if (var["attackTimer"] > 0) {
+		--var["attackTimer"];
+		Screen->SetColor(EColor::CC_DARKRED, EColor::CC_WHITE);
+	}
+	else {
+		Screen->SetColor(EColor::CC_RED);
+	}
 	for (int i = 0; i < GetW(); i++) {
 		for (int j = 0; j < GetH(); j++) {
 			Screen->Print(GetX() + i, GetY() + j, m_img, 2);
@@ -74,7 +83,9 @@ void CEnemy::IsAttack(CGameObject * obj)
 		if (rand() % 2 == 1) nowW -= rand()%2+1;
 		else nowH -= rand()%2+1;
 
-		if (nowW == 0 || nowH == 0) {
+		// 너비와 높이가 더이상 줄어들지 않는다면 삭제한다.
+		// 오브젝트가 폭탄이 아닌 불렛이라도 바로 삭제한다.
+		if (nowW <= 0 || nowH <= 0) {
 			Destory();
 			if (obj->var["isBomb"] == 0) obj->Destory();
 		}
@@ -82,5 +93,13 @@ void CEnemy::IsAttack(CGameObject * obj)
 			SetWH(nowW, nowH);
 			if (obj->var["isBomb"] == 0) obj->Destory();
 		}
+
+		// 피격시 뒤로 밀어주기
+		if (GetX() + GetW() / 2 > MainChar->GetX() + MainChar->GetW() / 2) PlusX(rand()%3);
+		if (GetX() + GetW() / 2 < MainChar->GetX() + MainChar->GetW() / 2) PlusX(-rand() % 3);
+		if (GetY() + GetH() / 2 > MainChar->GetY() + MainChar->GetH() / 2) PlusY(rand() % 3);
+		if (GetY() + GetH() / 2 < MainChar->GetY() + MainChar->GetH() / 2) PlusY(-rand() % 3);
+
+		var["attackTimer"] = 5;
 	}
 }
