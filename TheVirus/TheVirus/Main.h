@@ -6,6 +6,7 @@
 #include "GameObject.h"
 #include "MainChar.h"
 #include "Screen.h"
+#include "Enemy.h"
 
 #include <iostream>
 #include <thread>

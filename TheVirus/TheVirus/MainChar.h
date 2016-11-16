@@ -2,15 +2,17 @@
 
 #pragma once
 #include"GameObject.h"
-class CMainChar :
-	public CGameObject
+class CMainChar : public CGameObject
 {
 	int speed;
 	int moveTimer;
-
+	
 	CMainChar();
 	~CMainChar();
 public:
+	//¼Ò¸êÅºÀ» ´ã´Â º¯¼ö
+	int ammo;
+
 	static CMainChar* GetInstance()
 	{
 		static CMainChar singleTone;

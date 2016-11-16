@@ -1,5 +1,6 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include"Screen.h"
+#include<time.h>
 
 CScreen::CScreen() {
 	for (int i = 0; i < SCREEN_WIDTH; i++) {
@@ -111,3 +112,5 @@ void CScreen::Draw() {
 	}
 	gotoxy(0, 0);
 }
+
+

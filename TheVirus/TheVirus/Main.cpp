@@ -1,5 +1,6 @@
 #include "Main.h"
 #include<stdio.h>
+#include <time.h>
 
 
 // 게임의 전역 변수들을 초기화 시킴.
@@ -16,10 +17,23 @@ int main(VOID)
 
 	// 게임의 시간을 담는 변수입니다.
 	clock_t timer = clock();
+	clock_t start, end;
 	// 입력을 받는 쓰레드를 가동시킵니다.
 	std::thread input_thread(Thread_input);
-	
+
+	clock_t startTime = clock();	
 	while (bOnGame) {
+		// 몬스터를 스폰
+		{
+			const int regenTime = 20;
+			static int regenCounter = 0;
+			if (++regenCounter >= regenTime) {
+				CEnemy* tmp = new CEnemy();
+				Gameobjects.push_back(tmp);
+				regenCounter = 0;
+			}
+		}
+
 		// 행동
 		{
 			// 리스트에 들어있는 모든 Gameobjects들의 Func함수를 실행시킵니다.
@@ -43,6 +57,16 @@ int main(VOID)
 				else ++i;
 			}
 		}
+		//소멸탄 충전
+		if (MainChar->ammo <5) {
+			static int deltaTime = 0;
+			deltaTime++;
+			if (deltaTime == 400) {
+				MainChar->ammo++;
+				deltaTime = 0;
+			}
+		}
+
 		// 충돌
 		{
 			// 오브젝트간의 충돌 처리
@@ -87,12 +111,32 @@ int main(VOID)
 			// 크로스헤어 그리기
 			{
 				Screen->SetColor(EColor::CC_CYAN, EColor::CC_BLACK);
-				Screen->Print(mouse_x, mouse_y - 1, "▲", 2);
-				Screen->Print(mouse_x - 1, mouse_y, "◀", 2);
-				Screen->Print(mouse_x, mouse_y, "■", 2);
-				Screen->Print(mouse_x + 1, mouse_y, "▶", 2);
-				Screen->Print(mouse_x, mouse_y + 1, "▼", 2);
+				Screen->Print(mouse_x, mouse_y - 1, "┃", 2);
+				Screen->Print(mouse_x - 1, mouse_y, "━", 2);
+				Screen->Print(mouse_x + 1, mouse_y, "━", 2);
+				Screen->Print(mouse_x, mouse_y + 1, "┃", 2);
 			}
+			// 남은시간 표시
+			Screen->SetColor(EColor::CC_WHITE);
+			float delay = 60 - (clock() - startTime) / 1000;
+			char str[256];
+			sprintf(str, "남은시간:%2g 초", delay);
+			Screen->Print(SCREEN_WIDTH - strlen(str) + 4, 2, str);
+			if (delay == 0) {
+				system("cls");
+				cout << "게임클리어";
+				exit(1);
+			}
+			//소멸탄 개수 표시
+			Screen->SetColor(EColor::CC_YELLOW);
+			for (int i = 0; i<5; i++)
+			{
+				if (i<MainChar->ammo)
+					Screen->Print(SCREEN_WIDTH - 5 - i, 3, "⊙");
+				else
+					Screen->Print(SCREEN_WIDTH - 5 - i, 3, "  ");
+			}
+		
 			Screen->Draw();
 		}
 
@@ -101,9 +145,12 @@ int main(VOID)
 			// 현재 시간과 이전 프레임의 시간의 차이를 구합니다.
 			deltaTime = ((float)(clock() - timer) / CLOCKS_PER_SEC);
 			// 프레임마다 항상 같은 시간이 될 수 있게 Sleep을 겁니다.
-			if (deltaTime * 1000 < 20) Sleep(20.0f-deltaTime*1000);
+			if (deltaTime * 1000 < 20) Sleep(20.0f - deltaTime * 1000);
 			timer = clock();
 		}
+		//타이머
+
+		
 	}
 	return 0;
 }
@@ -113,7 +160,15 @@ void Init() {
 	HWND console = GetConsoleWindow();
 	RECT r;
 	GetWindowRect(console, &r); //stores the console's current dimensions
-	system("MODE CON COLS=160 LINES=51");
+
+	// 윈도우를 움직이지 못하도록.
+	SetWindowLong(console, GWL_STYLE, GetWindowLong(console, GWL_STYLE)&~WS_SIZEBOX);
+
+	// 윈도우 위치 초기화
+	SetWindowPos(console, 0, 100, 0, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+	
+	// 윈도우 크기 조정
+	system("MODE CON COLS=160 LINES=50");
 
 	// OnKey 초기화
 	for (int i = 0; i < 200; i++) onKey[i] = false;
@@ -122,7 +177,7 @@ void Init() {
 	Gameobjects.push_front(MainChar);
 
 	// 메인 캐릭터의 위치를 리셋 합니다.
-	MainChar->SetPosition(SCREEN_WIDTH/2, SCREEN_HEIGHT/2);
+	MainChar->SetPosition(SCREEN_WIDTH/2 - MainChar->GetW()/2, SCREEN_HEIGHT/2 - MainChar->GetH()/2);
 
 	//
 	CGameObject* obj = new CGameObject(MainChar->GetX()-6, MainChar->GetY()-6, "★");

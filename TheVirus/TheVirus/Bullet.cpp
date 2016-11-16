@@ -8,10 +8,13 @@ float Distance(float x1, float y1, float x2, float y2) {
 }
 CBullet::CBullet(bool bIsBomb)
 {
+	var["isBullet"] = 1;
 	moveTimer = 0;
 	m_bIsBomb = bIsBomb;
 
+	float dist = Distance(mouse_x, mouse_y, GetX() + GetW() / 2, GetY() + GetH() / 2);
 	if (bIsBomb) {
+		var["isBomb"] = 1;
 		var["destroy"] = WORLD_SPEED;
 		strcpy(m_img, "¡Ú");
 		SetW(7);
@@ -19,18 +22,24 @@ CBullet::CBullet(bool bIsBomb)
 		speed = 7;
 	}
 	else {
+		var["isBomb"] = 0;
 		strcpy(m_img, "¡Ü");
 		SetW(1);
 		SetH(1);
 		speed = 8;
+		dist = Distance(mouse_x, mouse_y, GetX() + GetW() / 2, GetY() + GetH() / 2) / 3;
 	}
 
-	SetX(MainChar->GetX() + MainChar->GetW() / 2 - GetW()/2);
-	SetY(MainChar->GetY() + MainChar->GetH() / 2 - GetH()/2);
-	float dist = Distance(mouse_x, mouse_y, GetX() + GetW() / 2, GetY() + GetH() / 2);
+	SetX(MainChar->GetX() + MainChar->GetW() / 2 - GetW() / 2);
+	SetY(MainChar->GetY() + MainChar->GetH() / 2 - GetH() / 2);
+
 	vecX = (mouse_x - GetX() - GetW()/2)/ dist;
 	vecY = (mouse_y - GetY() - GetH()/2)/ dist;
-	m_color = EColor::CC_RED;
+
+	if (vecX == 0.0f) vecX = rand() % 2 ? 1 : -1;
+	if (vecY == 0.0f) vecY = rand() % 2 ? 1 : -1;
+
+	m_color = EColor::CC_MAGENTA;
 }
 
 

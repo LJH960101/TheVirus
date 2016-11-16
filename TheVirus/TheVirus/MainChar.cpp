@@ -3,11 +3,12 @@
 #include "MainChar.h"
 #include "Main.h"
 
-CMainChar::CMainChar() : CGameObject(10, 10, 3, 3, "■")
+CMainChar::CMainChar() : CGameObject(10, 10, 5, 5, "■")
 {
 	m_color = EColor::CC_GREEN;
 	speed = 3;
 	moveTimer = 0;
+	ammo = 5;
 }
 CMainChar::~CMainChar()
 {
@@ -67,7 +68,28 @@ void CMainChar::Func()
 
 void CMainChar::IsAttack(CGameObject * obj)
 {
-	cout << "?" ;
+	if (obj->var["isMonster"] == 1) {
+		int nowW = GetW();
+		int nowH = GetH();
+
+		if (rand() % 2 == 1 && nowW!=1) {
+			--nowW;
+		}
+		else if(nowH!=1) --nowH;
+		else {
+			--nowW;
+		}
+		if (nowW == 0) {
+			system("cls");
+			cout << "게임오버";
+			exit(1);
+		}
+
+		SetWH(nowW, nowH);
+		SetPosition(SCREEN_WIDTH / 2 - MainChar->GetW() / 2, SCREEN_HEIGHT / 2 - MainChar->GetH() / 2);
+
+		obj->Destory();
+	}
 }
 void CMainChar::Shoot_L()
 {
@@ -76,6 +98,9 @@ void CMainChar::Shoot_L()
 }
 
 void CMainChar::Shoot_R() {
-	CBullet* tmp = new CBullet(1);
-	Gameobjects.push_back(tmp);
+	if (ammo > 0) {
+		CBullet* tmp = new CBullet(1);
+		Gameobjects.push_back(tmp);
+		ammo--;
+	}
 }
