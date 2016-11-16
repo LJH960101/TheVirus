@@ -17,8 +17,8 @@ CBullet::CBullet(bool bIsBomb)
 		var["isBomb"] = 1;
 		var["destroy"] = WORLD_SPEED;
 		strcpy(m_img, "¡Ú");
-		SetW(7);
-		SetH(7);
+		SetW(10);
+		SetH(10);
 		speed = 7;
 	}
 	else {
@@ -36,8 +36,10 @@ CBullet::CBullet(bool bIsBomb)
 	vecX = (mouse_x - GetX() - GetW()/2)/ dist;
 	vecY = (mouse_y - GetY() - GetH()/2)/ dist;
 
-	if (vecX == 0.0f) vecX = rand() % 2 ? 1 : -1;
-	if (vecY == 0.0f) vecY = rand() % 2 ? 1 : -1;
+	if (vecX == 0.0f && vecY == 0.0f) {
+		vecX = rand() % 2 ? 1 : -1;
+		vecY = rand() % 2 ? 1 : -1;
+	}
 
 	m_color = EColor::CC_MAGENTA;
 }
