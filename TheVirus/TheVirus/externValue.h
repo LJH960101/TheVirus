@@ -25,3 +25,4 @@ extern std::list<CGameObject*> Gameobjects;
 extern float deltaTime;
 // 게임 중임을 나타내는 변수입니다.
 extern bool bOnGame;
+extern int score;

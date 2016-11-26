@@ -1,8 +1,6 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include "Bullet.h"
-#include "externValue.h"
 
-// 거리를 구하는 함수
 float Distance(float x1, float y1, float x2, float y2) {
 	return sqrt((x2 - x1)*(x2 - x1) + (y2 - y1)*(y2 - y1));
 }
@@ -14,6 +12,7 @@ CBullet::CBullet(bool bIsBomb)
 
 	float dist = Distance(mouse_x, mouse_y, GetX() + GetW() / 2, GetY() + GetH() / 2);
 	if (bIsBomb) {
+		var["smallCnt"] = 0;
 		var["isBomb"] = 1;
 		var["destroy"] = WORLD_SPEED;
 		strcpy(m_img, "★");
@@ -84,14 +83,21 @@ void CBullet::Move()
 
 void CBullet::Func()
 {
-	if (m_bIsBomb) {
-		if (var["destroy"]<=0) {
-			SetW(GetW() - 2);
-			SetH(GetH() - 2);
-			PlusPosition(1, 1);
-			var["destroy"] = WORLD_SPEED;
+	++var["smallCnt"];
+	if (var["smallCnt"] >= 5) {
+		var["smallCnt"] = 0;
+		if (m_bIsBomb) {
+			if (var["destroy"] <= 0) {
+				SetW(GetW() - 2);
+				SetH(GetH() - 2);
+				PlusPosition(1, 1);
+				var["destroy"] = WORLD_SPEED;
+			}
+			else var["destroy"] --;
 		}
-		else var["destroy"] --;
+	}
+	if (Distance(GetX() + GetW() / 2, GetY() + GetH() / 2, MainChar->GetX() + MainChar->GetW() / 2, MainChar->GetY() + MainChar->GetH() / 2) >= 80) {
+		this->Destory();
 	}
 }
 

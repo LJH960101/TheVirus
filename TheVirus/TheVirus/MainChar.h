@@ -26,5 +26,6 @@ public:
 	void Shoot_L();
 	// 우클릭 이벤트입니다.
 	void Shoot_R();
+	void Reset();
 };
 

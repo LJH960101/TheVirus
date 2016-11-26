@@ -7,6 +7,7 @@
 #include "MainChar.h"
 #include "Screen.h"
 #include "Enemy.h"
+#include "Effect.h"
 
 #include <iostream>
 #include <thread>
@@ -15,6 +16,9 @@
 #include <stdio.h>
 #include <map>
 #include <functional>
+#include<stdio.h>
+#include <time.h>
+#include<conio.h>
 
 #define KEY_LEFT 65
 #define KEY_UP 87
@@ -22,3 +26,4 @@
 #define KEY_DOWN 83
 
 using namespace std;
+

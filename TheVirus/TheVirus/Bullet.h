@@ -3,6 +3,7 @@
 #pragma once
 #include "externValue.h"
 #include "GameObject.h"
+#include "Tool.h"
 class CBullet :
 	public CGameObject
 {

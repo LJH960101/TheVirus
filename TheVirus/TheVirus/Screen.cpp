@@ -113,4 +113,54 @@ void CScreen::Draw() {
 	gotoxy(0, 0);
 }
 
+void CScreen::Draw_Clear()
+{
+	SetColor(EColor::CC_WHITE, EColor::CC_BLACK);
+	setColor(m_color, m_bkcolor);
+	for (int i = 0; i < SCREEN_WIDTH; i++) {
+		for (int j = 0; j < SCREEN_HEIGHT; j++) {
+			gotoxy(i, j);
+			printf("%s", "  ");
+		}
+	}
+}
+void CScreen::Draw_Clear_Rect()
+{
+	this->Draw_Clear();
+
+
+	for (int i = 0; i < SCREEN_WIDTH; i++) {
+		for (int j = 0; j < SCREEN_HEIGHT; j++) {
+			m_map[i][j][0] = ' ';
+			m_map[i][j][1] = ' ';
+			m_map[i][j][2] = NULL;
+			m_before_map[i][j][0] = ' ';
+			m_before_map[i][j][1] = ' ';
+			m_before_map[i][j][2] = NULL;
+			m_map_color[i][j][0] = EColor::CC_WHITE;
+			m_map_color[i][j][1] = EColor::CC_BLACK;
+			m_before_map_color[i][j][0] = EColor::CC_WHITE;
+			m_before_map_color[i][j][1] = EColor::CC_BLACK;
+		}
+	}
+
+	for (int i = 0; i < SCREEN_WIDTH; i++) {
+		for (int j = 0; j < SCREEN_HEIGHT; j++) {
+			if (i == 0 || j == 0 || i == SCREEN_WIDTH - 1 || j == SCREEN_HEIGHT - 1) {
+				strcpy(m_map[i][j], "¢Ì");
+				m_map[i][j][2] = '\0';
+				m_map_color[i][j][0] = EColor::CC_BLACK;
+				m_map_color[i][j][1] = EColor::CC_WHITE;
+			}
+			else {
+				m_map[i][j][0] = ' ';
+				m_map[i][j][1] = ' ';
+				m_map_color[i][j][0] = EColor::CC_WHITE;
+				m_map_color[i][j][1] = EColor::CC_BLACK;
+			}
+		}
+	}
+	this->Draw();
+}
+
 

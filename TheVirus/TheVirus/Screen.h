@@ -72,4 +72,7 @@ public:
 	void Print(int x, int y, char* str, int len = 0);
 	// 화면을 다시 그려줍니다. 
 	void Draw();
+	// 화면을 비워줍니다.
+	void Draw_Clear();
+	void Draw_Clear_Rect();
 };

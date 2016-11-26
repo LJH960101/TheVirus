@@ -7,3 +7,4 @@ const int WORLD_SPEED = 10;
 std::list<CGameObject*> Gameobjects;
 float deltaTime = 0;
 bool bOnGame = true;
+int score = 0;

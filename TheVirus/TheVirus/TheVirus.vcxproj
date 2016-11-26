@@ -147,15 +147,18 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Bullet.h" />
+    <ClInclude Include="Effect.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="externValue.h" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="Tool.h" />
     <ClInclude Include="Main.h" />
     <ClInclude Include="MainChar.h" />
     <ClInclude Include="Screen.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Bullet.cpp" />
+    <ClCompile Include="Effect.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="externValue.cpp" />
     <ClCompile Include="GameObject.cpp" />

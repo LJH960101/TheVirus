@@ -71,6 +71,19 @@ void CMainChar::Move()
 }
 void CMainChar::Func()
 {
+	static int cnt = 0;
+	++cnt;
+	if (cnt >= 1000) {
+		cnt = 0;
+		if (GetW()<=GetH()) {
+			SetW(GetW() + 2);
+			PlusX(-1);
+		}
+		else {
+			SetH(GetH() + 2);
+			PlusY(-1);
+		}
+	}
 }
 
 void CMainChar::IsAttack(CGameObject * obj)
@@ -87,9 +100,7 @@ void CMainChar::IsAttack(CGameObject * obj)
 			--nowW;
 		}
 		if (nowW == 0) {
-			system("cls");
-			cout << "게임오버";
-			exit(1);
+			bOnGame = false;
 		}
 
 		SetWH(nowW, nowH);
@@ -111,4 +122,14 @@ void CMainChar::Shoot_R() {
 		Gameobjects.push_back(tmp);
 		ammo--;
 	}
+}
+
+void CMainChar::Reset()
+{
+	SetWH(5, 5);
+	m_color = EColor::CC_GREEN;
+	speed = 3;
+	moveTimer = 0;
+	ammo = 5;
+	var["attackTimer"] = 0;
 }
