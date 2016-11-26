@@ -36,7 +36,7 @@ CEnemy::CEnemy()
 
 	var["isNontarget"] = rand() % 6;
 	if (var["isNontarget"] != 1) {
-		SetWH(rand() % 3 + 2, rand() % 3 + 2);
+		SetWH(1, 1);
 		var["isNontarget"] = 1;
 		var["vecX"] = (MainChar->GetX() - GetX()) / 10;
 		var["vecY"] = (MainChar->GetY() - GetY()) / 10;
@@ -62,12 +62,10 @@ void CEnemy::Draw()
 	Screen->SetColor(m_color, m_bkColor);
 	if (var["attackTimer"] > 0) {
 		--var["attackTimer"];
-		if (var["isNontarget"] == 1)	Screen->SetColor(EColor::CC_DARKBLUE, EColor::CC_WHITE);
-		else Screen->SetColor(EColor::CC_DARKRED, EColor::CC_WHITE);
+		Screen->SetColor(EColor::CC_DARKRED, EColor::CC_WHITE);
 	}
 	else {
-		if (var["isNontarget"] == 1)	Screen->SetColor(EColor::CC_BLUE);
-		else Screen->SetColor(EColor::CC_RED);
+		Screen->SetColor(EColor::CC_RED);
 	}
 	for (int i = 0; i < GetW(); i++) {
 		for (int j = 0; j < GetH(); j++) {

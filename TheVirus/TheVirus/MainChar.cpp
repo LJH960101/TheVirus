@@ -3,7 +3,7 @@
 #include "MainChar.h"
 #include "Main.h"
 
-CMainChar::CMainChar() : CGameObject(10, 10, 5, 5, "бс")
+CMainChar::CMainChar() : CGameObject(10, 10, 5, 5, "б▄")
 {
 	m_color = EColor::CC_GREEN;
 	speed = 3;
