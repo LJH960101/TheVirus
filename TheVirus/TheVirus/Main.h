@@ -1,5 +1,4 @@
 #pragma once
-
 #define _CRT_SECURE_NO_WARNINGS
 
 #include "externValue.h"
@@ -8,6 +7,7 @@
 #include "Screen.h"
 #include "Enemy.h"
 #include "Effect.h"
+//#include "RankClass.h"
 
 #include <iostream>
 #include <thread>

@@ -85,10 +85,10 @@ void CEnemy::Move()
 			PlusY(var["vecY"]);
 		}
 		else {
-			if (GetX() + GetW() / 2 > MainChar->GetX() + MainChar->GetW() / 2 &&  abs(MainChar->GetX() + MainChar->GetW() / 2 - GetX() + GetW() / 2)>=GetW()/2 ) PlusX(-speed);
-			else if (GetX() + GetW() / 2 < MainChar->GetX() + MainChar->GetW() / 2 && abs(MainChar->GetX() + MainChar->GetW() / 2 - GetX() + GetW() / 2)>=GetW() / 2) PlusX(speed);
-			if (GetY() + GetH() / 2 > MainChar->GetY() + MainChar->GetH() / 2 && abs(MainChar->GetY() + MainChar->GetH() / 2 - GetY() + GetH() / 2)>=GetH() / 2) PlusY(-speed);
-			else if (GetY() + GetH() / 2 < MainChar->GetY() + MainChar->GetH() / 2 && abs(MainChar->GetY() + MainChar->GetH() / 2 - GetY() + GetH() / 2)>=GetH() / 2) PlusY(speed);
+			if (GetX() + GetW() / 2 > MainChar->GetX() + MainChar->GetW() / 2) PlusX(-speed);
+			else if (GetX() + GetW() / 2 < MainChar->GetX() + MainChar->GetW() / 2) PlusX(speed);
+			if (GetY() + GetH() / 2 > MainChar->GetY() + MainChar->GetH() / 2) PlusY(-speed);
+			else if (GetY() + GetH() / 2 < MainChar->GetY() + MainChar->GetH() / 2) PlusY(speed);
 		}
 	}
 }

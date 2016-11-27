@@ -1,5 +1,5 @@
 #include "Main.h"
-
+#include "RankClass.h"
 
 // 게임의 전역 변수들을 초기화 시킴.
 void Init();
@@ -12,10 +12,65 @@ void InitGame();
 #define MAIN_SPEED1 10
 #define MAIN_SPEED2 30
 
+RankClass myRank;
+
 void gotoxy(int x, int y)
 {
 	COORD Pos = { x - 1,y - 1 };
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), Pos);
+}
+void RankingScreen() {
+	int i;
+
+	for (i = 54; i < 108; i += 2)
+	{
+		gotoxy(i, 4);
+		printf("─");
+		Sleep(MAIN_SPEED1);
+	}
+
+	gotoxy(108, 4);
+	printf("┐");
+	for (i = 5; i < 25; i++)
+	{
+		gotoxy(108, i);
+		printf("│");
+		Sleep(MAIN_SPEED2);
+	}
+
+	gotoxy(108, 24);
+	printf("┘");
+	for (i = 106; i > 52; i -= 2)
+	{
+		gotoxy(i, 24);
+		printf("─");
+		Sleep(MAIN_SPEED1);
+	}
+
+	gotoxy(52, 24);
+	printf("└");
+	for (i = 23; i > 4; i--)
+	{
+		gotoxy(52, i);
+		printf("│");
+		Sleep(MAIN_SPEED2);
+	}
+
+	gotoxy(52, 4);
+	printf("┌");
+	Sleep(600);
+
+	for (int i = 0; i < 10; i++) {
+		if(i>=5) gotoxy(52 + 38 , 6 + (i-5)*3+2);
+		else gotoxy(52 + 8, 6 + i*3+2);
+		std::cout << i + 1 << ". " << myRank.GetRank(i) << "점";
+	}
+	gotoxy(65, 28);
+	std::cout << "Press Enter to back main-menu.";;
+	while (1) {
+		if (onKey[13]) break;
+	}
+	Screen->Draw_Clear();
 }
 void LoadingScreen() {
 
@@ -113,7 +168,10 @@ void LoadingScreen() {
 		if (onKey[13]) {
 			if (current_cursor == 1) break;
 			if (current_cursor == 2) {
-
+				Screen->Draw_Clear();
+				RankingScreen();
+				LoadingScreen();
+				break;
 			}
 			if (current_cursor == 3) exit(1);
 		}
@@ -173,7 +231,14 @@ void GameOverScreen() {
 	std::cout << "　■■■　　　　■　　　■■■■■　■　　　■" << std::endl;
 	gotoxy(58, 35);
 	printf("                 %7d", score);
-	Sleep(1500);
+	gotoxy(58, 37);
+	for (int i = 0; i < 10; i++) {
+		if (myRank.GetRank(i) == score) {
+			printf("                ■ %d등 달성 ■", i+1);
+			break;
+		}
+	}
+	Sleep(2000);
 }
 int main()
 {
@@ -219,8 +284,13 @@ int main()
 				for (std::list<CGameObject*>::iterator i = Gameobjects.begin(); i != Gameobjects.end();) {
 					(*i)->Func();
 					if ((*i)->bDieFlag) {// 삭제된 오브젝트는 처리한다.
-						delete (*i);
-						i = Gameobjects.erase(i);
+						try {
+							delete (*i);
+							i = Gameobjects.erase(i);
+						}
+						catch (int) {
+							MessageBox(HWND_DESKTOP, TEXT("Func Error!!"), TEXT("Func에서 객체를 해제하는 도중, 문제가 발생하였습니다."), MB_OK);
+						}
 					}
 					else ++i;
 				}
@@ -230,8 +300,13 @@ int main()
 				for (std::list<CGameObject*>::iterator i = Gameobjects.begin(); i != Gameobjects.end();) {
 					(*i)->Move();
 					if ((*i)->bDieFlag) {// 삭제된 오브젝트는 처리한다.
-						delete (*i);
-						i = Gameobjects.erase(i);
+						try{
+							delete (*i);
+							i = Gameobjects.erase(i);
+						}
+						catch (int) {
+							MessageBox(HWND_DESKTOP, TEXT("Move Error!!"), TEXT("Move에서 객체를 해제하는 도중, 문제가 발생하였습니다."), MB_OK);
+						}
 					}
 					else ++i;
 				}
@@ -267,14 +342,24 @@ int main()
 							}
 
 							if ((*j)->bDieFlag) {// 삭제된 오브젝트는 처리한다.
-								delete (*j);
-								j = Gameobjects.erase(j);
+								try{
+									delete (*j);
+									j = Gameobjects.erase(j);
+								}
+								catch (int) {
+									MessageBox(HWND_DESKTOP, TEXT("Attack Error!!"), TEXT("Attck에서 객체를 해제하는 도중, 문제가 발생하였습니다."), MB_OK);
+								}
 							}
 							else ++j;
 
 							if ((*i)->bDieFlag) {// 삭제된 오브젝트를 처리하고, i값이 바뀌므로 브레이크함.
-								delete (*i);
-								i = Gameobjects.erase(i);
+								try {
+									delete (*i);
+									i = Gameobjects.erase(i);
+								}
+								catch (int) {
+									MessageBox(HWND_DESKTOP, TEXT("Func Error!!"), TEXT("Func에서 객체를 해제하는 도중, 문제가 발생하였습니다."), MB_OK);
+								}
 								i_has_coll = true;
 								break;
 							}
@@ -329,6 +414,7 @@ int main()
 		}
 		Screen->Draw_Clear();
 
+		myRank.AddRank(score);
 		GameOverScreen();
 		Screen->Draw_Clear();
 		LoadingScreen();
@@ -409,25 +495,30 @@ void Thread_input() {
 		ErrorExit("SetConsoleMode");
 	while (1)
 	{
-		if (!ReadConsoleInput(
-			hStdin,      // input buffer handle 
-			irInBuf,     // buffer to read into 
-			128,         // size of read buffer 
-			&cNumRead)) // number of records read 
-			ErrorExit("ReadConsoleInput");
-		for (i = 0; i < cNumRead; i++)
-		{
-			switch (irInBuf[i].EventType)
+		try {
+			if (!ReadConsoleInput(
+				hStdin,      // input buffer handle 
+				irInBuf,     // buffer to read into 
+				128,         // size of read buffer 
+				&cNumRead)) // number of records read 
+				ErrorExit("ReadConsoleInput");
+			for (i = 0; i < cNumRead; i++)
 			{
-			case KEY_EVENT: // keyboard input 
-				KeyEventProc(irInBuf[i].Event.KeyEvent);
-				break;
+				switch (irInBuf[i].EventType)
+				{
+				case KEY_EVENT: // keyboard input 
+					KeyEventProc(irInBuf[i].Event.KeyEvent);
+					break;
 
-			case MOUSE_EVENT: // mouse input 
-				MouseEventProc(irInBuf[i].Event.MouseEvent);
-				break;
+				case MOUSE_EVENT: // mouse input 
+					MouseEventProc(irInBuf[i].Event.MouseEvent);
+					break;
+				}
 			}
 		}
+		catch (char) {
+			MessageBox(HWND_DESKTOP, TEXT("Thread Error!!"), TEXT("스레드에서 오류가 발생했습니다."), MB_OK);
+		};
 	}
 
 	// Restore input mode on exit.
